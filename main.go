@@ -1,17 +1,20 @@
-/*
-论坛系统主模块，读取配置，创建服务器，设置路由
-
-create_time: 2020-9-9
-author: korei
+/**
+ * @Author: korei
+ * @Description: 论坛系统主模块，读取配置，创建服务器，设置路由
+ * @File:  main.go
+ * @Version: 1.0.0
+ * @Date: 2020/9/10 下午4:26
  */
+
 package main
 
 import (
 	"github.com/gin-gonic/gin"
+	_ "korei/onlineForum/model"
 	"net/http"
 )
 
-func main()  {
+func main1()  {
 	router := gin.Default()
 	router.LoadHTMLGlob("./template/*")
 
@@ -39,4 +42,11 @@ func main()  {
 
 	//start service
 	router.Run(":9999")
+}
+
+/**
+ *	this is a simple main function for test
+ */
+func main()  {
+	print("begin main")
 }
