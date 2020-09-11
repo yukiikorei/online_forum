@@ -20,8 +20,36 @@ type SubForum struct {
 
 type Block struct {
 	gorm.Model
-	SubForumName	string
+	SubForumName	string	`gorm:"type:varchar(40)"`
 	Name 			string	`gorm:"unique;type:varchar(40)"`
 	MasterID		string
 	Master 			User
+	Themes			[]Theme
+}
+
+//TODO: Block 置顶
+
+//TODO: Block 主题
+type Theme struct {
+	BlockID 	uint 		`gorm:"primaryKey"`
+	BlockName	string		`gorm:"type:varchar(40)"`
+	Name 		string		`gorm:"primaryKey;type:varchar(30)"`
+	Threads		[]Thread	`gorm:"foreignKey:BlockID,ThemeName;references:BlockID,Name"`
+}
+
+//----------------------------------------------------------
+//-----------Access Method----------------------------------
+//----------------------------------------------------------
+
+
+func AddSubForum(subForum *SubForum) {
+	db.Create(subForum)
+}
+func DeleteSubForumName(subForum SubForum) {
+	db.Delete(&subForum)
+}
+
+func GetSubForums()(subForums []SubForum){
+	db.Preload("Blocks").Find(&subForums)
+	return
 }

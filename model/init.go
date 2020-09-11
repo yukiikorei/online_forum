@@ -31,32 +31,29 @@ func init()  {
 		db = temDB
 	}
 
+	//restoreDB()
 	checkAndCreateTable()
 	//insertTestData()
-
-	test()
+	//test()
 }
 
 func checkAndCreateTable()  {
 	mig := db.Migrator()
-	if !mig.HasTable(&User{}) {
-		mig.CreateTable(&User{})
-	}
-	if !mig.HasTable(&Comment{}){
-		mig.CreateTable(&Comment{})
-	}
-	if !mig.HasTable(&Block{}){
-		mig.CreateTable(&Block{})
-		//db.AutoMigrate(&Block{})
-	}
-	if !mig.HasTable(&SubForum{}){
-		mig.CreateTable(&SubForum{})
-		//db.AutoMigrate(&Block{},&SubForum{})
-	}
-//	if !mig.HasTable(&Thread{}){
-//		mig.CreateTable(&Thread{})
-//	}
+	if !mig.HasTable(&User{}) 		{ mig.CreateTable(&User{}) }
+	if !mig.HasTable(&Comment{})	{ mig.CreateTable(&Comment{}) }
+	if !mig.HasTable(&Block{})		{ mig.CreateTable(&Block{}) }
+	if !mig.HasTable(&SubForum{})	{ mig.CreateTable(&SubForum{}) }
+	if !mig.HasTable(&Theme{})		{ mig.CreateTable(&Theme{}) }
+	if !mig.HasTable(&Thread{})		{ mig.CreateTable(&Thread{}) }
 
+	if !mig.HasTable(&BlockFrozenUser{})		{ mig.CreateTable(&BlockFrozenUser{}) }
+	if !mig.HasTable(&ForumFrozenUser{})		{ mig.CreateTable(&ForumFrozenUser{}) }
+	if !mig.HasTable(&BanedIP{})				{ mig.CreateTable(&BanedIP{}) }
+	//create constraint here ... maybe..
+
+}
+
+func load(){
 
 }
 
@@ -86,12 +83,13 @@ func insertTestData() {
 		Name: "b2",
 		MasterID: "korei",
 	}
+	sb1.Blocks = append(sb1.Blocks, b1,b2)
 
 	db.Create(&yukii)
 	db.Create(&korei)
 	db.Create(&sb1)
-	db.Create(&b1)
-	db.Create(&b2)
+	//db.Create(&b1)
+	//db.Create(&b2)
 }
 
 func restoreDB()  {

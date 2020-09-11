@@ -10,7 +10,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"korei/onlineForum/controlFake"
 	_ "korei/onlineForum/model"
+	"korei/onlineForum/requestHandler"
 	"net/http"
 )
 
@@ -29,16 +31,12 @@ func main1()  {
 	})
 
 
-
-
-	//fro manager
-	managerRouter := router.Group("/manager")
-
-	managerRouter.GET("/", func(context *gin.Context) {
-		context.HTML(http.StatusOK,"index.html",gin.H{})
-	})
-
-
+	//for ADMIN
+	adminRouter := router.Group("/admin")
+	router.LoadHTMLGlob("./template/*")
+	adminRouter.GET("", requestHandler.ControlPanel)
+	adminRouter.GET("/login",requestHandler.LoginPage)
+	adminRouter.POST("/login",requestHandler.LoginProcess)
 
 	//start service
 	router.Run(":9999")
@@ -49,4 +47,5 @@ func main1()  {
  */
 func main()  {
 	print("begin main")
+	controlFake.Test1()
 }

@@ -17,16 +17,19 @@ import (
  */
 type Thread struct {
 	gorm.Model
-	Tittle		string
-	Block 		Block
-	Theme		string
-	UserID 		string
+	Tittle		string			`gorm:"type:varchar(100)"`
+
+	BlockID 	uint
+	ThemeName	string			`gorm:"type:varchar(30)"`
+
+	UserID 		string			`gorm:"type:varchar(11)"`
 	User 		User			`gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Comments 	[]Comment
+	Comments 	[]Comment		`gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 type Comment struct{
 	gorm.Model
+	ThreadID 	uint
 	UserID  	string
 	User 		User
 	Content 	string

@@ -13,6 +13,7 @@ type User struct {
 	Email		string		`gorm:"unique;type:varchar(50)"`
 	UserName 	string		`gorm:"type:varchar(30)"`
 	Password	string		`gorm:"type:varchar(30)"`
+	LastIP		string		`gorm:"tpee:varchar(16)"`
 }
 
 func createUser(user *User){
