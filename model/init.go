@@ -12,6 +12,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 //some global var
@@ -33,6 +34,7 @@ func init()  {
 
 	//restoreDB()
 	checkAndCreateTable()
+	//insertTestData1()
 	//insertTestData()
 	//test()
 }
@@ -58,39 +60,77 @@ func load(){
 }
 
 func insertTestData() {
+
+	admin := User{
+		ID:"admin",
+		Email: "admin@gmail.com",
+		UserName: "admin",
+		Password: "admin",
+		LastIP: "127.0.0.1",
+		ThawTime: time.Unix(0,0),
+	}
 	yukii := User{
 		ID:"yukii",
 		Email: "yukii@gmail.com",
 		UserName: "yukii",
 		Password: "test",
+		LastIP: "127.0.0.1",
+		ThawTime: time.Unix(0,0),
 	}
 	korei := User{
 		ID:"korei",
 		Email: "korei@gmail.com",
 		UserName: "korei",
 		Password: "test",
+		LastIP: "127.0.0.1",
+		ThawTime: time.Unix(0,0),
 	}
 	sb1 := SubForum{
-		Name: "sb1",
+		Name: "sb2",
 	}
 	b1 := Block{
-		SubForumName: "sb1",
-		Name: "b1",
+		SubForumName: "sb2",
+		Name: "a1",
 		MasterID: "yukii",
 	}
 	b2 := Block{
-		SubForumName: "sb1",
-		Name: "b2",
+		SubForumName: "sb2",
+		Name: "a2",
 		MasterID: "korei",
 	}
 	sb1.Blocks = append(sb1.Blocks, b1,b2)
 
+	db.Create(&admin)
 	db.Create(&yukii)
 	db.Create(&korei)
+	//db.Create(&sb1)
+	//db.Create(&b1)
+	//db.Create(&b2)
+}
+func insertTestData1() {
+	sb1 := SubForum{
+		Name: "sb2",
+	}
+	b1 := Block{
+		SubForumName: "sb2",
+		Name: "a1",
+		MasterID: "yukii",
+	}
+	b2 := Block{
+		SubForumName: "sb2",
+		Name: "a2",
+		MasterID: "korei",
+	}
+	sb1.Blocks = append(sb1.Blocks, b1,b2)
+
+	//db.Create(&admin)
+	//db.Create(&yukii)
+	//db.Create(&korei)
 	db.Create(&sb1)
 	//db.Create(&b1)
 	//db.Create(&b2)
 }
+
 
 func restoreDB()  {
 	mig := db.Migrator()

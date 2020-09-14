@@ -19,6 +19,7 @@ import (
 //	3. 屏蔽IP列表
 
 type BlockFrozenUser struct {
+	//TODO: add reference of block !!
 	gorm.Model
 	UserID 		string		`gorm:"unique"`
 	User		User
@@ -33,5 +34,18 @@ type ForumFrozenUser struct {
 }
 
 type BanedIP struct {
-	IP 		string		`gorm:"primaryKey;type:varchar(12)"`
+	gorm.Model
+	IP 		string		`gorm:"unique;index;type:varchar(12)"`
 }
+
+func AddBanedIP(ip *BanedIP) bool {
+	result := db.Create(&ip)
+	return result.RowsAffected==0
+}
+
+func DeleteBanedIP(ip *BanedIP) bool {
+	result := db.Unscoped().Delete(ip)
+	return result.RowsAffected==0
+}
+
+

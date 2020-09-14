@@ -24,3 +24,5 @@ func AdminLogin(userID string,password string)(cookie string,result bool){
 	return "",false
 }
 
+
+

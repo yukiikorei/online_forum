@@ -42,14 +42,45 @@ type Theme struct {
 //----------------------------------------------------------
 
 
-func AddSubForum(subForum *SubForum) {
-	db.Create(subForum)
+func AddSubForum(subForum *SubForum) bool{
+	result := db.Create(subForum)
+	if result.RowsAffected == 0 {
+		return false
+	}
+	return true
 }
-func DeleteSubForumName(subForum SubForum) {
-	db.Delete(&subForum)
+
+func DeleteSubForum(subForum *SubForum) bool{
+	result := db.Where("name = ?",subForum.Name).Unscoped().Delete(subForum)
+	if result.RowsAffected == 0 {
+		return false
+	}
+	return true
 }
 
 func GetSubForums()(subForums []SubForum){
 	db.Preload("Blocks").Find(&subForums)
 	return
+}
+
+func AddBlock(newblock *Block) bool {
+	//block name ,sub forum name ,master needed
+	result := db.Create(newblock)
+	if result.RowsAffected == 0 {
+		return false
+	}
+	return true
+}
+
+func DeleteBlock(block *Block) bool{
+	result := db.Unscoped().Delete(block)
+	if result.RowsAffected == 0 {
+		return false
+	}
+	return true
+}
+
+func ChangeMaster(blockID uint,newMasterID string) bool {
+	result := db.Model(&Block{}).Where("id = ?",blockID).Update("master_id",newMasterID)
+	return  !(result.RowsAffected == 0)
 }

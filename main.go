@@ -10,15 +10,22 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"html/template"
+	_ "korei/onlineForum/config"
 	"korei/onlineForum/controlFake"
 	_ "korei/onlineForum/model"
 	"korei/onlineForum/requestHandler"
 	"net/http"
+	"time"
 )
 
-func main1()  {
+func main()  {
 	router := gin.Default()
+	router.SetFuncMap(template.FuncMap{
+		"after":time.Time.After,
+	})
 	router.LoadHTMLGlob("./template/*")
+	//router.HTMLRender=createMultiTemplateRender()
 
 	//set static file system
 	router.StaticFS("./static/",http.Dir("./static"))
@@ -33,19 +40,23 @@ func main1()  {
 
 	//for ADMIN
 	adminRouter := router.Group("/admin")
-	router.LoadHTMLGlob("./template/*")
+	//adminRouter.LoadHTMLGlob("./template/*")
 	adminRouter.GET("", requestHandler.ControlPanel)
-	adminRouter.GET("/login",requestHandler.LoginPage)
+	adminRouter.GET("/block",requestHandler.BlockManage)
+	adminRouter.POST("/block",requestHandler.BlockManagePost)
+	//adminRouter.GET("/login",requestHandler.LoginPage)
 	adminRouter.POST("/login",requestHandler.LoginProcess)
-
+	adminRouter.GET("/user",requestHandler.UserManageGet)
+	adminRouter.POST("/user",requestHandler.UserManagePost)
 	//start service
 	router.Run(":9999")
 }
 
+
 /**
  *	this is a simple main function for test
  */
-func main()  {
+func main1()  {
 	print("begin main")
 	controlFake.Test1()
 }
