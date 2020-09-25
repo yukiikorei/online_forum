@@ -31,12 +31,25 @@ func main()  {
 	router.StaticFS("./static/",http.Dir("./static"))
 	router.StaticFS("./css/",http.Dir("./css"))
 	router.StaticFS("./javascript/",http.Dir("./javascript"))
+	router.StaticFS("./raw/thread",http.Dir("./data/thread"))
 
-	//static page get
-	router.GET("/", func(context *gin.Context) {
-		context.HTML(http.StatusOK,"index.html",gin.H{})
-	})
 
+
+
+	//main route
+	router.GET("/", requestHandler.HomePackageGet)
+	router.GET("/login",requestHandler.LoginPage)
+	router.POST("/login",requestHandler.UserLoginProcess)
+	router.GET("/block/:blockID",requestHandler.GetBlockPage)
+	router.POST("/block/:blockID",requestHandler.BlockPageProcess)
+	router.GET("/thread/:threadID",requestHandler.GetThreadPage)
+	router.POST("/thread/:threadID",requestHandler.ThreadPageProcess)
+	router.GET("/user/:userID",requestHandler.UserInfoPage)
+	router.GET("/master/:blockID",requestHandler.GetMasterPage)
+	router.POST("/master/:blockID",requestHandler.ProcessMaster)
+	router.POST("/register",requestHandler.Register)
+	router.GET("/search",requestHandler.SearchThreads)
+	router.POST("/changeUserInfo",requestHandler.ChangeUserInfo)
 
 	//for ADMIN
 	adminRouter := router.Group("/admin")
@@ -48,6 +61,9 @@ func main()  {
 	adminRouter.POST("/login",requestHandler.LoginProcess)
 	adminRouter.GET("/user",requestHandler.UserManageGet)
 	adminRouter.POST("/user",requestHandler.UserManagePost)
+
+
+
 	//start service
 	router.Run(":9999")
 }

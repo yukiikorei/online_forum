@@ -23,9 +23,10 @@ type User struct {
 	ThawTime	time.Time
 }
 
-func CreateUser(user *User){
+func CreateUser(user *User) bool {
 	user.ThawTime = time.Unix(0,0)
-	db.Create(user)
+	result := db.Create(user)
+	return result.RowsAffected!= 0
 }
 
 func IfFrozen(user User) bool {
@@ -49,10 +50,10 @@ func UsersFilter(user *User)(users []User){
 func UsersFilterFrozenOnly(user *User,frozenOnly bool)(users []User){
 	filter := db
 	if user.ID != ""{
-		filter = filter.Where("ID = ?",user.ID)
+		filter = filter.Where("ID like ?","%"+user.ID+"%")
 	}
 	if user.Email != ""{
-		filter = filter.Where("Email = ?",user.Email)
+		filter = filter.Where("Email like ?","%"+user.Email+"%")
 	}
 	if user.UserName != ""{
 		filter = filter.Where("User_Name like ?","%"+user.UserName+"%")
@@ -68,8 +69,14 @@ func UsersFilterFrozenOnly(user *User,frozenOnly bool)(users []User){
 }
 
 func SetFrozenTime(userID string,thawTime time.Time) bool{
-	result := db.Model(&User{ID: userID}).Update("thaw_time",thawTime)
+	result := db.Where("id = ? ",userID).Model(&User{}).Update("thaw_time",thawTime)
 	return !(result.RowsAffected == 0)
+}
+
+func SetUserNameAndEmail(userID string,newUserName string,newEmail string)bool {
+	result := db.Where("id = ?",userID).Model(&User{}).Update("user_name",
+		newUserName).Update("email",newEmail)
+	return result.RowsAffected != 0
 }
 
 

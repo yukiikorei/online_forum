@@ -10,7 +10,6 @@ package control
 
 import (
 	"errors"
-	"github.com/golang/protobuf/ptypes/duration"
 	"gorm.io/gorm"
 	"korei/onlineForum/model"
 	"time"
@@ -75,22 +74,23 @@ func ChangeMasterID(blockID uint,masterID string) error {
 	return nil
 }
 
-func SearchUser(ID string,name string,IP string)[]model.User{
-	user := model.User{
-			UserName: name,
-			ID:ID,
-			LastIP: IP,
-			Email: "",
-		}
-	return model.UsersFilter(&user)
-}
-
-func SearchFrozenUser(ID string,name string,IP string)[]model.User{
+func SearchUser(ID string,name string,IP string,email string)[]model.User{
 	user := model.User{
 		UserName: name,
 		ID:ID,
 		LastIP: IP,
-		Email: "",
+		Email: email,
+	}
+
+	return model.UsersFilter(&user)
+}
+
+func SearchFrozenUser(ID string,name string,IP string,email string)[]model.User{
+	user := model.User{
+		UserName: name,
+		ID:ID,
+		LastIP: IP,
+		Email: email,
 	}
 	return model.UsersFilterFrozenOnly(&user,true)
 }
@@ -102,7 +102,7 @@ func FreezeUser(userID string,duration time.Duration) error {
 	}
 }
 
-func ThawUser(userID string,duration duration.Duration) error {
+func ThawUser(userID string) error {
 	ok := model.SetFrozenTime(userID,time.Now())
 	if ok {return nil}else{
 		return errors.New("thaw failure")

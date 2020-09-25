@@ -47,6 +47,7 @@ func checkAndCreateTable()  {
 	if !mig.HasTable(&SubForum{})	{ mig.CreateTable(&SubForum{}) }
 	if !mig.HasTable(&Theme{})		{ mig.CreateTable(&Theme{}) }
 	if !mig.HasTable(&Thread{})		{ mig.CreateTable(&Thread{}) }
+	if !mig.HasTable(&ThreadContent{})			{mig.CreateTable(&ThreadContent{})}
 
 	if !mig.HasTable(&BlockFrozenUser{})		{ mig.CreateTable(&BlockFrozenUser{}) }
 	if !mig.HasTable(&ForumFrozenUser{})		{ mig.CreateTable(&ForumFrozenUser{}) }

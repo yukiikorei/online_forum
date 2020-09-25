@@ -63,9 +63,9 @@ func GetSubForums()(subForums []SubForum){
 	return
 }
 
-func AddBlock(newblock *Block) bool {
+func AddBlock(newBlock *Block) bool {
 	//block name ,sub forum name ,master needed
-	result := db.Create(newblock)
+	result := db.Create(newBlock)
 	if result.RowsAffected == 0 {
 		return false
 	}
@@ -83,4 +83,39 @@ func DeleteBlock(block *Block) bool{
 func ChangeMaster(blockID uint,newMasterID string) bool {
 	result := db.Model(&Block{}).Where("id = ?",blockID).Update("master_id",newMasterID)
 	return  !(result.RowsAffected == 0)
+}
+
+func GetBlock(blockID uint) *Block {
+	block := Block{}
+	db.Where("id = ?",blockID).Preload("Themes").Find(&block)
+	return &block
+}
+
+func GetBlockThreads(blockID uint) (threads []Thread) {
+	db.Where("block_id = ?",blockID).Find(&threads)
+	return
+}
+
+func AddTheme(blockID uint,themeName string) bool {
+	block := GetBlock(blockID)
+	theme := Theme{
+		BlockID: blockID,
+		BlockName: block.Name,
+		Name: themeName,
+	}
+	result := db.Create(&theme)
+	return result.RowsAffected!=0
+}
+
+func DeleteTheme(blockID uint,themeName string) bool{
+	result := db.Unscoped().Where("block_id = ?",
+		blockID).Where("name = ?",themeName).Delete(&Theme{})
+	return result.RowsAffected!=0
+}
+
+func GetThemeWithThreads(blockID uint,themeName string)(theme *Theme){
+	theme = &Theme{}
+	db.Where("block_id = ?",blockID).Where("name = ?",themeName).Preload(
+		"Threads").Find(theme)
+	return
 }

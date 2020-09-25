@@ -25,6 +25,13 @@ type Thread struct {
 	UserID 		string			`gorm:"type:varchar(11)"`
 	User 		User			`gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Comments 	[]Comment		`gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+
+	Content 	ThreadContent	`gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
+type ThreadContent struct {
+	ThreadID	uint
+	Content 	string
 }
 
 type Comment struct{
@@ -35,7 +42,38 @@ type Comment struct{
 	Content 	string
 }
 
-func addThread()  {
-
+func AddThread(thread *Thread) bool {
+	result := db.Create(thread)
+	return result.RowsAffected!=0
 }
 
+func DeleteThread(userID string,threadID uint)bool {
+	result := db.Where("id = ?" ,threadID).Where("user_id = ?" ,userID).Delete(&Thread{})
+	return result.RowsAffected!=0
+}
+
+func DeleteThreadAsMaster(threadID uint)bool {
+	result := db.Where("id = ?" ,threadID).Delete(&Thread{})
+	return result.RowsAffected!=0
+}
+
+func GetThreadFromID(threadID uint)*Thread{
+	thread := Thread{}
+	db.Preload("Content").Preload("Comments").Where("id = ?",threadID).Find(&thread)
+	return &thread
+}
+
+func GetThreadsOfUser(userID string)(threads []Thread){
+	db.Where("user_id = ?",userID).Find(&threads)
+	return
+}
+
+func AddComment(comment *Comment) bool {
+	result := db.Create(comment)
+	return result.RowsAffected!=0
+}
+
+func SearchThreads(query string)(threads []Thread){
+	db.Where("tittle like ?","%"+query+"%").Find(&threads)
+	return
+}

@@ -123,29 +123,35 @@ func UserManagePost(context *gin.Context)  {
 	action := context.PostForm("action")
 	if action=="getUsers"{
 		userName := context.PostForm("userName")
-		userID := context.PostForm("userId")
+		userID := context.PostForm("userID")
 		IP:= context.PostForm("IP")
-		users := control.SearchUser(userID,userName,IP)
+		email := context.PostForm("email")
+		users := control.SearchUser(userID,userName,IP,email)
 		context.HTML(http.StatusOK,"usermanage.html",
 			gin.H{"users":users,"now":time.Now()})
 	}else if action=="getFrozen"{
 		userName := context.PostForm("userName")
 		userID := context.PostForm("userId")
 		IP:= context.PostForm("IP")
-		users := control.SearchFrozenUser(userID,userName,IP)
+		email := context.PostForm("email")
+		users := control.SearchFrozenUser(userID,userName,IP,email)
 		context.HTML(http.StatusOK,"usermanage.html",
 			gin.H{"users":users,"now":time.Now()})
 	}else if action=="freezeUser"{
-		/*
-		userID := context.PostForm("userId")
+		userID := context.PostForm("userID")
 		year,_ := strconv.Atoi(context.PostForm("year"))
 		month,_ := strconv.Atoi(context.PostForm("month"))
 		day,_ := strconv.Atoi(context.PostForm("day"))
 		hour,_ := strconv.Atoi(context.PostForm("hour"))
 		min,_ := strconv.Atoi(context.PostForm("min"))
-		 */
+		second := ((((year*365)+month*12 +day)*24+hour)*60+min)*60
+		duration := time.Duration(int64(second)*1000000000)
+		control.FreezeUser(userID,duration)
+	}else if action=="thaw"{
+		userID := context.PostForm("userID")
+		control.ThawUser(userID)
 
-	}else{
+	} else{
 		context.String(http.StatusBadRequest,"Bad request without \"action\" in post form")
 	}
 }
